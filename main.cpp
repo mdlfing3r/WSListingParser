@@ -1,9 +1,13 @@
+#if 1
+
 #ifdef __cplusplus
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 #include <string.h>
 #include <stdio.h>
+//#include <pcap/pcap.h>
 #include <pcap/pcap.h>
+#include <pcap-int.h>
 
 #define DEBUG 1
 
@@ -62,31 +66,35 @@ int main(const int argc, const char** argv)
             if(paramsList[paramsIt].value != NULL) break;
             paramsList[paramsIt].value = strstr(argv[argIt], paramsList[paramsIt].name);
             if(paramsList[paramsIt].value == NULL) continue;
-        }
+        }close
     }
 #endif
-    char *dev=NULL, *errbuf;
+    char *dev=NULL, *errbuf = NULL;
     int devCounter;
-    pcap_if_t *device;
-    pcap_t *m_hCardSource;
+    pcap_if_t *devicelist;
+    pcap_t *m_hCardSource, *pcapFile_s;
 
+#if 0
     //получаем список всех сетевых устройств(адаптеров)
-    devCounter = pcap_findalldevs(&device, errbuf);
+    devCounter = pcap_findalldevs(&devicelist, errbuf);
         
     //открываем устройство
     //m_hCardSource = pcap_open_live(device->name, 65536, 1, -1, errbuf);
 
-    if ( device->name == NULL) 
+    if ( devicelist->name == NULL) 
     {
         fprintf(stderr, "Couldn't find default device: %s\n", errbuf);
         return(2);
     }else{
         printf("Available devices: %s\n");
-        while (device)
+        while (devicelist)
         {
-            printf("-%s\n", device->name);
-            device = device->next;
+            printf("-%s\n", devicelist->name);
+            devicelist = devicelist->next;
         }
     }
-    
+#endif
+
+    pcapFile_s = pcap_open_offline(paramsList[pathIndex].value, errbuf);    
 }
+#endif
